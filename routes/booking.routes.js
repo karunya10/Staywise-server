@@ -29,7 +29,26 @@ router.get("/host", isAuthenticated, async (req, res, next) => {
 
 router.post("/", isAuthenticated, async (req, res, next) => {
   const { newBooking } = req.body;
+  const { listingId, checkIn, checkOut } = newBooking;
+
   try {
+    const overlappingBooking = await Booking.findOne({
+      listingId,
+      status: { $in: ["pending", "confirmed"] },
+      $or: [
+        {
+          checkIn: { $lt: checkOut },
+          checkOut: { $gt: checkIn },
+        },
+      ],
+    });
+
+    if (overlappingBooking) {
+      return res
+        .status(409)
+        .json({ message: "Listing not available for these dates" });
+    }
+
     const booking = Booking.create({ newBooking });
     res.status(201).json(booking);
   } catch (error) {
