@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const addressSchema = require("./address.model");
 
 const userSchema = new Schema(
   {
@@ -23,6 +24,13 @@ const userSchema = new Schema(
       default: "",
     },
     favorites: [{ type: Schema.Types.ObjectId, ref: "Listing" }],
+    phone: {
+      type: String,
+      default: "",
+    },
+    address: {
+      type: addressSchema,
+    },
   },
   {
     timestamps: true,

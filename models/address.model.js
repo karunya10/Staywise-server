@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema } = require("mongoose");
 
 const addressSchema = new Schema(
   {
@@ -17,4 +17,4 @@ const addressSchema = new Schema(
   { _id: false }
 );
 
-module.exports = model("Address", addressSchema);
+module.exports = addressSchema;

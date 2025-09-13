@@ -5,6 +5,29 @@ const Booking = require("../models/booking.model");
 
 const Review = require("../models/review.model");
 
+router.get("/:reviewid", async (req, res, next) => {
+  const { reviewid } = req.params;
+  try {
+    const review = await Review.findById(reviewid);
+    res.status(200).json(review);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/listings/:listingId", async (req, res, next) => {
+  const { listingId } = req.params;
+  try {
+    const reviews = await Review.find({ listingId: listingId }).populate(
+      "authorId"
+    );
+    res.status(200).json(reviews);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// see tomorrow
 router.post("/", isAuthenticated, async (req, res, next) => {
   const { review } = req.body;
   const { user } = req.payload;
@@ -17,16 +40,6 @@ router.post("/", isAuthenticated, async (req, res, next) => {
     }
     const response = await Review.create({ review });
     res.status(201).json(response);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/:reviewid", async (req, res, next) => {
-  const { reviewid } = req.params;
-  try {
-    const review = await Review.findById(reviewid);
-    res.status(200).json(review);
   } catch (error) {
     next(error);
   }
@@ -66,16 +79,6 @@ router.delete("/:reviewid", isAuthenticated, async (req, res, next) => {
         .json({ message: "Review not found or not authorized" });
     }
     res.sendStatus(204);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/listings/:listingId/reviews", async (req, res, next) => {
-  const { listingId } = req.params;
-  try {
-    const reviews = await Review.find({ listingId: listingId });
-    res.status(200).json(reviews);
   } catch (error) {
     next(error);
   }

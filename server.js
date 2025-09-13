@@ -11,9 +11,9 @@ app.use(express.json());
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/users", require("./routes/user.routes"));
-app.use("/api/listings", require("./routes/user.routes"));
-app.use("api/bookings", require("./routes/booking.routes"));
-app.use("api/reviews", require("./routes/review.routes"));
+app.use("/api/listings", require("./routes/listing.routes"));
+app.use("/api/bookings", require("./routes/booking.routes"));
+app.use("/api/reviews", require("./routes/review.routes"));
 
 const { routeExist, serverError } = require("./error-handling/index");
 
