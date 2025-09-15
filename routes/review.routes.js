@@ -16,7 +16,6 @@ const Booking = require("../models/booking.model");
 
 const Review = require("../models/review.model");
 
-//used
 router.get(
   "/booking/:bookingId",
   isAuthenticated,
@@ -37,7 +36,6 @@ router.get(
   }
 );
 
-//used
 router.post(
   "/",
   isAuthenticated,
@@ -63,7 +61,6 @@ router.post(
   }
 );
 
-//used
 router.put(
   "/:reviewid",
   isAuthenticated,
@@ -90,7 +87,6 @@ router.put(
   }
 );
 
-//used
 router.delete(
   "/:reviewid",
   isAuthenticated,
@@ -116,7 +112,6 @@ router.delete(
   }
 );
 
-//used
 router.get(
   "/listings/:listingId",
   getByListingValidation,
@@ -133,16 +128,5 @@ router.get(
     }
   }
 );
-
-//unused
-router.get("/:reviewid", async (req, res, next) => {
-  const { reviewid } = req.params;
-  try {
-    const review = await Review.findById(reviewid);
-    res.status(200).json(review);
-  } catch (error) {
-    next(error);
-  }
-});
 
 module.exports = router;

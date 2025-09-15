@@ -11,7 +11,6 @@ const {
 const User = require("../models/user.model");
 const isAuthenticated = require("../middleware/auth.middleware");
 
-//used
 router.get("/", isAuthenticated, async (req, res, next) => {
   const userid = req.payload.user._id;
   try {
@@ -25,7 +24,6 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//used
 router.get("/favorites", isAuthenticated, async (req, res, next) => {
   const userid = req.payload.user._id;
   try {
@@ -37,7 +35,6 @@ router.get("/favorites", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//used
 router.put(
   "/",
   isAuthenticated,
@@ -59,7 +56,6 @@ router.put(
   }
 );
 
-//used
 router.post(
   "/favorites/:listingid",
   isAuthenticated,
@@ -82,7 +78,6 @@ router.post(
   }
 );
 
-//used
 router.delete(
   "/favorites/:listingid",
   isAuthenticated,

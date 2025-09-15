@@ -14,7 +14,6 @@ const {
 
 const isAuthenticated = require("../middleware/auth.middleware");
 
-//used
 router.get(
   "/",
   getListingsValidation,
@@ -44,7 +43,6 @@ router.get(
   }
 );
 
-//used
 router.post(
   "/by-ids",
   getListingsByIdsValidation,
@@ -65,7 +63,7 @@ router.post(
   }
 );
 
-//Get current user's Listing's--> The one he/she owns! Host
+// Get current user's Listing's--> The one he/she owns! Host
 router.get("/host", isAuthenticated, async (req, res, next) => {
   try {
     const { user } = req.payload;
@@ -76,7 +74,6 @@ router.get("/host", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//used
 router.get(
   "/:listingid",
   validateListingIdParam,
@@ -97,7 +94,7 @@ router.get(
   }
 );
 
-//used -----For Guest, Host can also see---> For FE Guest calendar
+// -----For Guest, Host can also see---> For FE Guest calendar
 router.get(
   "/:listingid/bookings",
   validateListingIdParam,

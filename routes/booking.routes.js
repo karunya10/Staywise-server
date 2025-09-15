@@ -11,7 +11,6 @@ const {
 } = require("../middleware/validation.middleware");
 const isAuthenticated = require("../middleware/auth.middleware");
 
-//used
 router.get("/", isAuthenticated, async (req, res, next) => {
   const user = req.payload.user;
   try {
@@ -26,7 +25,6 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//used
 router.post(
   "/",
   isAuthenticated,
@@ -66,7 +64,6 @@ router.post(
   }
 );
 
-//used
 router.put(
   "/:bookingid/cancel",
   isAuthenticated,
@@ -94,7 +91,7 @@ router.put(
   }
 );
 
-//used
+//host
 router.get("/host", isAuthenticated, async (req, res, next) => {
   const user = req.payload.user;
   try {
@@ -109,27 +106,7 @@ router.get("/host", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//unused
-router.get("/:bookingid", isAuthenticated, async (req, res, next) => {
-  const { bookingid } = req.params;
-  const { user } = req.payload;
-  try {
-    const booking = await Booking.findById(bookingid);
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
-    }
-    if (booking.guestId.toString() !== user._id) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to view this booking" });
-    }
-    res.status(200).json(booking);
-  } catch (error) {
-    next(error);
-  }
-});
-
-// for the Host
+//host
 router.put(
   "/:bookingid/cancel/host",
   isAuthenticated,
