@@ -1,5 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const {
+  updateUserValidation,
+  favoritesValidation,
+} = require("../validators/user.validator");
+const {
+  handleValidationErrors,
+} = require("../middleware/validation.middleware");
 
 const User = require("../models/user.model");
 const isAuthenticated = require("../middleware/auth.middleware");
@@ -31,23 +38,33 @@ router.get("/favorites", isAuthenticated, async (req, res, next) => {
 });
 
 //used
-router.put("/", isAuthenticated, async (req, res, next) => {
-  const userid = req.payload.user._id;
-  try {
-    const user = await User.findByIdAndUpdate(userid, req.body, { new: true });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    const truncatedUser = user.toObject();
-    delete truncatedUser.password;
-    res.status(200).json(truncatedUser);
-  } catch (error) {
-    next(error);
+router.put(
+  "/",
+  isAuthenticated,
+  updateUserValidation,
+  handleValidationErrors,
+  async (req, res, next) => {
+    const userid = req.payload.user._id;
+    try {
+      const user = await User.findByIdAndUpdate(userid, req.body, {
+        new: true,
+      });
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const truncatedUser = user.toObject();
+      delete truncatedUser.password;
+      res.status(200).json(truncatedUser);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 //used
 router.post(
   "/favorites/:listingid",
   isAuthenticated,
+  favoritesValidation,
+  handleValidationErrors,
   async (req, res, next) => {
     const { listingid } = req.params;
     const userid = req.payload.user._id;
@@ -69,6 +86,8 @@ router.post(
 router.delete(
   "/favorites/:listingid",
   isAuthenticated,
+  favoritesValidation,
+  handleValidationErrors,
   async (req, res, next) => {
     const { listingid } = req.params;
     const userid = req.payload.user._id;
