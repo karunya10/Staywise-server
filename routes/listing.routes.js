@@ -102,7 +102,12 @@ router.get(
   handleValidationErrors,
   async (req, res, next) => {
     const listingId = req.params.listingid;
+
     try {
+      const listing = await Listing.find({listingId});
+      if (listing.length === 0) {
+        res.status(404).json({ message: "Listing not Found" });
+      }
       const bookings = await Booking.find({
         listingId,
         status: { $in: ["confirmed"] },
