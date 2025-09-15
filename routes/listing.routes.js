@@ -27,6 +27,7 @@ router.get(
       }
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const response = await Listing.find(filter)
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parseInt(limit));
       const total = await Listing.countDocuments(filter);
