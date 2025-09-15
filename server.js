@@ -9,6 +9,8 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 
+app.use("/public", express.static(require("path").join(__dirname, "public")));
+
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/listings", require("./routes/listing.routes"));

@@ -6,12 +6,13 @@ const Booking = require("../models/booking.model");
 
 const isAuthenticated = require("../middleware/auth.middleware");
 
+//used
 router.get("/", async (req, res, next) => {
   try {
     const { city, page = 1, limit = 10 } = req.query;
     let filter = {};
     if (city) {
-      filter["address.city"] = { $eq: city, $options: "i" };
+      filter["address.city"] = { $eq: city };
     }
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const response = await Listing.find(filter)
@@ -30,6 +31,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+//used
 router.post("/by-ids", async (req, res, next) => {
   try {
     const { ids } = req.body;
@@ -45,7 +47,7 @@ router.post("/by-ids", async (req, res, next) => {
   }
 });
 
-//Get current user's Listing's--> The one he/she owns!
+//Get current user's Listing's--> The one he/she owns! Host
 router.get("/host", isAuthenticated, async (req, res, next) => {
   try {
     const { user } = req.payload;
@@ -56,6 +58,7 @@ router.get("/host", isAuthenticated, async (req, res, next) => {
   }
 });
 
+//used
 router.get("/:listingid", async (req, res, next) => {
   const { listingid } = req.params;
   try {
@@ -71,7 +74,7 @@ router.get("/:listingid", async (req, res, next) => {
   }
 });
 
-//For Guest, Host can also see---> For FE Guest calendar
+//used -----For Guest, Host can also see---> For FE Guest calendar
 router.get("/:listingid/bookings", async (req, res, next) => {
   const listingId = req.params.listingid;
   try {
@@ -85,9 +88,20 @@ router.get("/:listingid/bookings", async (req, res, next) => {
   }
 });
 
+//Host
 router.post("/", isAuthenticated, async (req, res, next) => {
   const { user } = req.payload;
-  const listingData = { ...req.body, hostId: user._id };
+  const listingData = req.body;
+  listingData.hostId = user._id;
+  if (
+    !listingData.photos ||
+    !Array.isArray(listingData.photos) ||
+    listingData.photos.length === 0
+  ) {
+    listingData.photos = [
+      `${req.protocol}://${req.get("host")}/public/listingDefault.png`,
+    ];
+  }
   try {
     const response = await Listing.create(listingData);
     res.status(201).json(response);
@@ -96,6 +110,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
   }
 });
 
+//Host
 router.put("/:listingid", isAuthenticated, async (req, res, next) => {
   const { listingid } = req.params;
   const { user } = req.payload;
@@ -120,6 +135,8 @@ router.put("/:listingid", isAuthenticated, async (req, res, next) => {
   }
 });
 
+//Host
+const { cascadeDeleteListing } = require("../utils/cascadeDelete");
 router.delete("/:listingid", isAuthenticated, async (req, res, next) => {
   const { listingid } = req.params;
   const { user } = req.payload;
@@ -135,6 +152,8 @@ router.delete("/:listingid", isAuthenticated, async (req, res, next) => {
         .status(403)
         .json({ message: "User not authorized to delete listing" });
     }
+    // Cascade delete related data
+    await cascadeDeleteListing(listingid);
     await Listing.findByIdAndDelete(listingid);
     res.sendStatus(204);
   } catch (error) {
