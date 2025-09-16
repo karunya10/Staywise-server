@@ -104,7 +104,7 @@ router.get(
     const listingId = req.params.listingid;
 
     try {
-      const listing = await Listing.find({listingId});
+      const listing = await Listing.find({ _id: listingId });
       if (listing.length === 0) {
         res.status(404).json({ message: "Listing not Found" });
       }
