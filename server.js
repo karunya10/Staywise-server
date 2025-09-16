@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
 require("./config/index");
-const isAuthenticated = require("./middleware/auth.middleware");
 const app = express();
 
 app.use(cors());

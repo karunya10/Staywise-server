@@ -1,5 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+const path = require("path");
+const upload = multer({ dest: "uploads/" });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+const normalizeFormData = require("../middleware/normalizeListingFormData.middleware");
+
 const Listing = require("../models/listing.model");
 const Booking = require("../models/booking.model");
 const {
@@ -30,6 +42,7 @@ router.get(
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parseInt(limit));
+
       const total = await Listing.countDocuments(filter);
       res.status(200).json({
         data: response,
@@ -123,20 +136,25 @@ router.get(
 router.post(
   "/",
   isAuthenticated,
+  upload.single("photo"),
+  normalizeFormData,
   listingValidation,
   handleValidationErrors,
   async (req, res, next) => {
     const { user } = req.payload;
     const listingData = req.body;
     listingData.hostId = user._id;
-    if (
-      !listingData.photos ||
-      !Array.isArray(listingData.photos) ||
-      listingData.photos.length === 0
-    ) {
-      listingData.photos = [
-        `${req.protocol}://${req.get("host")}/public/listingDefault.png`,
-      ];
+
+   
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "listings",
+      });
+      console.log(result);
+      fs.unlinkSync(req.file.path);
+      listingData.photos = [];
+      listingData.photos.push(result.secure_url);
+     
     }
     try {
       const response = await Listing.create(listingData);

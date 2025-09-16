@@ -32,7 +32,7 @@ router.post("/signup", async (req, res, next) => {
     const generatedSalt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, generatedSalt);
     await UserModel.create({ email, password: hashedPassword, name: name });
-    res.json({ success: true });
+    res.status(200).json({ success: true });
   } catch (error) {
     next(error);
   }
