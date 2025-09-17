@@ -16,7 +16,11 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     const bookings = await Booking.find({ guestId: user._id }).populate({
       path: "listingId",
-      select: "title address photos",
+      select: "title address photos hostId",
+      populate: {
+        path: "hostId",
+        select: "name",
+      },
     });
 
     res.status(200).json(bookings);
@@ -99,7 +103,12 @@ router.get("/host", isAuthenticated, async (req, res, next) => {
     const listingIds = listings.map((listing) => listing._id);
     const bookings = await Booking.find({
       listingId: { $in: listingIds },
-    }).populate("listingId");
+    })
+      .populate("listingId")
+      .populate({
+        path: "guestId",
+        select: "name",
+      });
     res.status(200).json(bookings);
   } catch (error) {
     next(error);

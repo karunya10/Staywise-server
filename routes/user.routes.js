@@ -101,16 +101,18 @@ router.delete(
 );
 
 //unused
+// Delete user and cascade delete listings, bookings, and reviews
+const { cascadeDeleteUserData } = require("../utils/cascadeDelete");
+
 router.delete("/", isAuthenticated, async (req, res, next) => {
   const userid = req.payload.user._id;
   try {
+    await cascadeDeleteUserData(userid);
     const user = await User.findByIdAndDelete(userid);
     if (!user) return res.status(404).json({ message: "User not found" });
-    user.favorites = user.favorites.filter(
-      (fav) => fav.toString() !== listingid
-    );
-    await user.save();
-    res.status(200).json(user.favorites);
+    res
+      .status(200)
+      .json({ message: "User and related data deleted successfully" });
   } catch (error) {
     next(error);
   }

@@ -1,5 +1,4 @@
 function normalizeFormData(req, res, next) {
-
   req.body.address = {
     line1: req.body["address.line1"],
     line2: req.body["address.line2"],
@@ -14,13 +13,15 @@ function normalizeFormData(req, res, next) {
   req.body.bedrooms = parseInt(req.body.bedrooms);
   req.body.bathrooms = parseInt(req.body.bathrooms);
 
-  const amenities = [];
-  Object.keys(req.body).forEach((key) => {
-    if (key.startsWith("amenities[")) {
-      amenities.push(req.body[key]);
-    }
-  });
-  req.body.amenities = amenities.length > 0 ? amenities : undefined;
+  // const amenities = [];
+  // Object.keys(req.body).forEach((key) => {
+  //   if (key.startsWith("amenities[")) {
+  //     amenities.push(req.body[key]);
+  //   }
+  // });
+  // console.log(amenities);
+  // console.log(req.body);
+  //req.body.amenities = amenities.length > 0 ? amenities : undefined;
 
   next();
 }
