@@ -26,6 +26,8 @@ const {
 
 const isAuthenticated = require("../middleware/auth.middleware");
 
+
+
 router.get(
   "/",
   getListingsValidation,
@@ -108,7 +110,7 @@ router.get(
   }
 );
 
-// -----For Guest, Host can also see---> For FE Guest calendar
+// -----For Host --> For FE Guest calendar block the calendar for this booking!
 router.get(
   "/:listingid/bookings",
   validateListingIdParam,
@@ -117,9 +119,9 @@ router.get(
     const listingId = req.params.listingid;
 
     try {
-      const listing = await Listing.find({ _id: listingId });
+      const listing = await Listing.findById(listingId);
       if (listing.length === 0) {
-        res.status(404).json({ message: "Listing not Found" });
+        return res.status(404).json({ message: "Listing not Found" });
       }
       const bookings = await Booking.find({
         listingId,
@@ -219,7 +221,7 @@ router.delete(
           .status(403)
           .json({ message: "User not authorized to delete listing" });
       }
-      // Cascade delete related data
+     
       await cascadeDeleteListing(listingid);
       await Listing.findByIdAndDelete(listingid);
       res.sendStatus(204);

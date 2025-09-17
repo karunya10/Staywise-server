@@ -45,7 +45,6 @@ router.post(
     const review = req.body;
     const { user } = req.payload;
     review.authorId = user._id;
-    console.log(review);
     try {
       const booking = await Booking.findOne({
         $and: [{ _id: review.bookingId }, { guestId: user._id }],
