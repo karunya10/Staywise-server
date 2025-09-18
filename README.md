@@ -64,29 +64,17 @@ server.js         # Entry point
 
 - `name`, `email`, `password`, `avatarUrl`, `favorites`, `phone`, `address`
 
-  **Snapshot:**
-  ![User Model Example](./documentation/images/user-model-snapshot.png)
-
 ### Listing
 
 - `hostId`, `title`, `description`, `pricePerNight`, `address`, `amenities`, `photos`, `maxGuests`, `bedrooms`, `bathrooms`
-
-  **Snapshot:**
-  ![Listing Model Example](./documentation/images/listing-model-snapshot.png)
 
 ### Booking
 
 - `listingId`, `guestId`, `checkIn`, `checkOut`, `totalPrice`, `status`
 
-  **Snapshot:**
-  ![Booking Model Example](./documentation/images/booking-model-snapshot.png)
-
 ### Review
 
 - `listingId`, `bookingId`, `authorId`, `rating`, `comment`
-
-  **Snapshot:**
-  ![Review Model Example](./documentation/images/review-model-snapshot.png)
 
 ### Address (Embedded)
 
