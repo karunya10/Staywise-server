@@ -5,7 +5,11 @@ require("dotenv").config();
 require("./config/index");
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: "https://staywise-client-production.up.railway.app",
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(express.json());
 
